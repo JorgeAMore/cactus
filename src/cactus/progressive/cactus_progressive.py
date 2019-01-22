@@ -15,6 +15,7 @@ import xml.etree.ElementTree as ET
 from argparse import ArgumentParser
 from base64 import b64encode
 from subprocess import check_call
+from subprocess import CalledProcessError
 
 from toil.lib.bioio import getTempFile
 
@@ -394,8 +395,13 @@ def importSingularityImage():
         oldCWD = os.getcwd()
         os.chdir(os.path.dirname(imgPath))
         # --size is deprecated starting in 2.4, but is needed for 2.3 support. Keeping it in for now.
-        check_call(["singularity", "pull", "--size", "2000", "--name", os.path.basename(imgPath),
-                    "docker://" + getDockerImage()])
+        try:
+            check_call(["singularity", "pull", "--size", "2000", "--name", os.path.basename(imgPath),
+                        "docker://" + getDockerImage()])
+        except CalledProcessError:
+            # Call failed, try without --size
+            check_call(["singularity", "pull", "--name", os.path.basename(imgPath),
+                        "docker://" + getDockerImage()])
         os.chdir(oldCWD)
 
 def main():
