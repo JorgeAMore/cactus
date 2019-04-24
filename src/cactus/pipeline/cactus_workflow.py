@@ -825,7 +825,7 @@ class CactusBarPhase(CactusPhasesJob):
 
 class CactusBarRecursion(CactusRecursionJob):
     """This job does the get flowers down pass for the BAR alignment phase."""
-    memoryPoly = [2e+09]
+    memoryPoly = [3e+09]
 
     def run(self, fileStore):
         self.makeRecursiveJobs(fileStore=fileStore)
